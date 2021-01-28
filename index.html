@@ -64,57 +64,57 @@ th,td{ border: 2px solid gray; margin: 0px; padding: 5px; text-align: center; }
 
 
 
-function buscarIds(){ // FunÁ„o que compara e verifica se os n˙meros informados na lista da esquerda est„o na lista da direita
+function buscarIds(){ // Fun√ß√£o que compara e verifica se os n√∫meros informados na lista da esquerda est√£o na lista da direita
 
-  var numesq = document.getElementById("dadosnumero").value; // Pega todo o conte˙do colado na ·rea de texto esquerda
-  var numdir = document.getElementById("basenumeros").value; // Pega todo o conte˙do colado na ·rea de texto direita
+  var numesq = document.getElementById("dadosnumero").value; // Pega todo o conte√∫do colado na √°rea de texto esquerda
+  var numdir = document.getElementById("basenumeros").value; // Pega todo o conte√∫do colado na √°rea de texto direita
 
-  numdir = numdir.replace(/Product Backlog Item\",,\"Cerimonias/,""); // Elimina a palavra-chave "Product Backlog Item" quando È "CerimÙnias", assim a histÛria È ignorada na lista da direita
+  numdir = numdir.replace(/Product Backlog Item\",,\"Cerimonias/,""); // Elimina a palavra-chave "Product Backlog Item" quando √© "Cerim√¥nias", assim a hist√≥ria √© ignorada na lista da direita
 
-  var arraynumesq = numesq.match(/\d+/g); // Pega apenas os n˙meros da lista da esquerda
-  var arraynumdir = numdir.match(/\d+\",\"(Product Backlog Item|Bug|User Story)/g); // Pega os n˙meros + tipos da lista da direita (tipo È necess·rio para encontrar a posiÁ„o dos n˙meros, ser· retirado abaixo)
+  var arraynumesq = numesq.match(/\d+/g); // Pega apenas os n√∫meros da lista da esquerda
+  var arraynumdir = numdir.match(/\d+\",\"(Product Backlog Item|Bug|User Story)/g); // Pega os n√∫meros + tipos da lista da direita (tipo √© necess√°rio para encontrar a posi√ß√£o dos n√∫meros, ser√° retirado abaixo)
 
   for(i=0; i<arraynumdir.length; i++){ // Percorre a lista da direita
-    arraynumdir[i] = arraynumdir[i].replace(/\",\"(Product Backlog Item|Bug|User Story)/,""); // Retira os tipos e deixa apenas os n˙meros da lista da direita
+    arraynumdir[i] = arraynumdir[i].replace(/\",\"(Product Backlog Item|Bug|User Story)/,""); // Retira os tipos e deixa apenas os n√∫meros da lista da direita
   }
 
-  var uniqnumesq = [...new Set(arraynumesq)]; // Converte o array em conjunto e novamente em array, para eliminar os itens repetidos - com apenas uma linha de cÛdigo :)
+  var uniqnumesq = [...new Set(arraynumesq)]; // Converte o array em conjunto e novamente em array, para eliminar os itens repetidos - com apenas uma linha de c√≥digo :)
   var uniqnumdir = [...new Set(arraynumdir)]; // Mesma coisa, mas pra lista da direita
 
-  var naoachou = 0; // ComeÁa com 0 n„o encontrados
-  for(var i = 0; i < uniqnumesq.length; i++){ // Vai percorrer toda a lista da esquerda para verificar se est„o na da direira
-    var num = uniqnumesq[i]; // N˙mero da vez
+  var naoachou = 0; // Come√ßa com 0 n√£o encontrados
+  for(var i = 0; i < uniqnumesq.length; i++){ // Vai percorrer toda a lista da esquerda para verificar se est√£o na da direira
+    var num = uniqnumesq[i]; // N√∫mero da vez
 
-    if(!uniqnumdir.includes(num)){ // Se a lista da direita n„o incluir o n˙mero...
-      if(naoachou == 0){ // Caso seja o primeiro a n„o ser encontrado,
-        document.getElementById("tabela").innerHTML = "<tr><th>ID da HistÛria/Bug</th><th>Est· no Azure?</th></tr>"; // Insere o cabeÁalho da tabela
-        document.getElementById("subtitulo").innerHTML = ""; // Limpa a informaÁ„o sobre total de encontrados
+    if(!uniqnumdir.includes(num)){ // Se a lista da direita n√£o incluir o n√∫mero...
+      if(naoachou == 0){ // Caso seja o primeiro a n√£o ser encontrado,
+        document.getElementById("tabela").innerHTML = "<tr><th>ID da Hist√≥ria/Bug</th><th>Est√° no Azure?</th></tr>"; // Insere o cabe√ßalho da tabela
+        document.getElementById("subtitulo").innerHTML = ""; // Limpa a informa√ß√£o sobre total de encontrados
       }
-      naoachou++; // Soma mais um na lista de n„o encontrados
-      document.getElementById("tabela").insertAdjacentHTML('beforeend', "<tr><td>"+ num +"</td><td class='naotem'>N„o</td></tr>"); // Insere a informaÁ„o sobre o n˙mero n„o encontrado na tabela
+      naoachou++; // Soma mais um na lista de n√£o encontrados
+      document.getElementById("tabela").insertAdjacentHTML('beforeend', "<tr><td>"+ num +"</td><td class='naotem'>N√£o</td></tr>"); // Insere a informa√ß√£o sobre o n√∫mero n√£o encontrado na tabela
     }
   }
 
-  if(naoachou == 0){ // Se houve algum n˙mero que n„o foi encontrado...
+  if(naoachou == 0){ // Se houve algum n√∫mero que n√£o foi encontrado...
     document.getElementById("tabela").innerHTML = ""; // Limpa a tabela
-    document.getElementById("subtitulo").innerHTML = "Todos os " + uniqnumesq.length + " n˙meros encontrados!"; // Informa o total
-  }else{ // Sen„o...
-    document.getElementById("subtitulo").innerHTML = (uniqnumesq.length - naoachou) + " n˙meros encontrados."; // Conta quantos foram de fato encontrados
+    document.getElementById("subtitulo").innerHTML = "Todos os " + uniqnumesq.length + " n√∫meros encontrados!"; // Informa o total
+  }else{ // Sen√£o...
+    document.getElementById("subtitulo").innerHTML = (uniqnumesq.length - naoachou) + " n√∫meros encontrados."; // Conta quantos foram de fato encontrados
   }
 
 }
 
 
 
-function semAcento(nome){ // FunÁ„o legada, do cÛdigo anterior. N„o est· sendo usada, mas pode ser ˙til algum dia, ent„o... taÌ.
+function semAcento(nome){ // Fun√ß√£o legada, do c√≥digo anterior. N√£o est√° sendo usada, mas pode ser √∫til algum dia, ent√£o... ta√≠.
   nome = nome.replace(/\s+/g," ");
   nome = nome.trim();
-  nome = nome.replace(/[¡¿¬√·‡‚„]/g,"A");
-  nome = nome.replace(/[…» ÈËÍ]/g,"E");
-  nome = nome.replace(/[ÕÃŒÌÏÓ]/g,"I");
-  nome = nome.replace(/[”“‘’ÛÚÙı]/g,"O");
-  nome = nome.replace(/[⁄Ÿ€‹˙˘˚¸]/g,"U");
-  nome = nome.replace(/[«Á]/g,"C");
+  nome = nome.replace(/[√Å√Ä√Ç√É√°√†√¢√£]/g,"A");
+  nome = nome.replace(/[√â√à√ä√©√®√™]/g,"E");
+  nome = nome.replace(/[√ç√å√é√≠√¨√Æ]/g,"I");
+  nome = nome.replace(/[√ì√í√î√ï√≥√≤√¥√µ]/g,"O");
+  nome = nome.replace(/[√ö√ô√õ√ú√∫√π√ª√º]/g,"U");
+  nome = nome.replace(/[√á√ß]/g,"C");
   nome = nome.replace(/\s?\(.+\)/g,"");
   nome = nome.replace(/\s?\+\s?\d+/g,"");
   nome = nome.replace(/\s+/g," ");
@@ -144,7 +144,7 @@ function semAcento(nome){ // FunÁ„o legada, do cÛdigo anterior. N„o est· sendo u
 
 <div id='ladoesquerdo'>
   <textarea id='dadosnumero' placeholder="Coluna de ID da planilha de faturamento" autofocus cols="23" rows="10"></textarea>
-  <div class='buscar' id='buscarnumeros' onclick="buscarIds();">Comparar n˙meros</div>
+  <div class='buscar' id='buscarnumeros' onclick="buscarIds();">Comparar n√∫meros</div>
 </div>
 
 <div id='ladodireito'>
