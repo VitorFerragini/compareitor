@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Compareitor</title>
+
+
+
+<link rel="shortcut icon" href="arquivos/joelson.ico" type="image/x-icon">
+<link rel="icon" href="arquivos/joelson.ico" type="image/x-icon">
+
+
+
+<style>
+
+*{ font-family: Verdana; }
+#corpo{ margin: 15px; }
+#titulo{ margin: 30px 15px 20px; }
+#subtitulo{ margin-left: 30px; margin-bottom: 25px; color: DimGray; font-size: 16px; }
+
+#ladoesquerdo{ float: left; }
+#ladodomeio, #ladodireito{ float: left; margin-left: 10px;}
+#ladodebaixo{ clear: both; }
+
+textarea{ font-family: Lucida Console; font-size: 13px; border: 2px solid Darkgray; 
+          padding: 8px; margin-bottom: 10px; }
+
+#tabela{ margin-top: 20px; width: 500px; border-spacing: 0px; border-collapse: collapse; }
+td{ font-size: 14px; }
+th{ background-color: LightGray; }
+th,td{ border: 2px solid gray; margin: 0px; padding: 5px; text-align: center; }
+
+.naotem{ background-color: LightPink; }
+.tem{ background-color: MediumTurquoise; }
+.buscar{ cursor: pointer; border-radius: 10px; margin: 10px; padding: 5px; -moz-user-select: none; }
+#buscartodos{ width: 100px; border: 2px solid LightBlue; background-color: AliceBlue; }
+#buscarativos{ width: 80px; border: 2px solid LightGreen; background-color: #EFE; }
+#buscarencerrados{ width: 120px; border: 2px solid LightPink; background-color: #FEE; }
+#buscarquantos{ width: 160px; border: 2px solid Gold; background-color: #FFD; }
+#buscarregistros{ width: 160px; border: 2px solid DarkOrchid; background-color: #DCF; }
+
+.encerrado{ background-color: LightPink; }
+.ativo{ background-color: MediumTurquoise; }
+.naoencontrado{ background-color: Cornsilk; }
+
+#buscarnumero{ width: 135px; border: 2px solid DarkGray; background-color: LightGray; }
+
+#buscarnumeronabase{ width: 125px; border: 2px solid #89D; background-color: #CDF; }
+
+#buscarnumeros{ width: 160px; border: 2px solid DarkGray; background-color: #EEE; }
+#dadosnumero{ border-radius: 5px 0px 0px 5px; background-color: #BEC; }
+#basenumeros{ border-radius: 0px 0px 5px 0px; background-color: #CDF; }
+
+</style>
+
+
+
+<script>
+
+
+
+  // JOELSON
+
+
+
+function buscarIds(){ // Função que compara e verifica se os números informados na lista da esquerda estão na lista da direita
+
+  var numesq = document.getElementById("dadosnumero").value; // Pega todo o conteúdo colado na área de texto esquerda
+  var numdir = document.getElementById("basenumeros").value; // Pega todo o conteúdo colado na área de texto direita
+
+  numdir = numdir.replace(/Product Backlog Item\",,\"Cerimonias/,""); // Elimina a palavra-chave "Product Backlog Item" quando é "Cerimônias", assim a história é ignorada na lista da direita
+
+  var arraynumesq = numesq.match(/\d+/g); // Pega apenas os números da lista da esquerda
+  var arraynumdir = numdir.match(/\d+\",\"(Product Backlog Item|Bug|User Story)/g); // Pega os números + tipos da lista da direita (tipo é necessário para encontrar a posição dos números, será retirado abaixo)
+
+  for(i=0; i<arraynumdir.length; i++){ // Percorre a lista da direita
+    arraynumdir[i] = arraynumdir[i].replace(/\",\"(Product Backlog Item|Bug|User Story)/,""); // Retira os tipos e deixa apenas os números da lista da direita
+  }
+
+  var uniqnumesq = [...new Set(arraynumesq)]; // Converte o array em conjunto e novamente em array, para eliminar os itens repetidos - com apenas uma linha de código :)
+  var uniqnumdir = [...new Set(arraynumdir)]; // Mesma coisa, mas pra lista da direita
+
+  var naoachou = 0; // Começa com 0 não encontrados
+  for(var i = 0; i < uniqnumesq.length; i++){ // Vai percorrer toda a lista da esquerda para verificar se estão na da direira
+    var num = uniqnumesq[i]; // Número da vez
+
+    if(!uniqnumdir.includes(num)){ // Se a lista da direita não incluir o número...
+      if(naoachou == 0){ // Caso seja o primeiro a não ser encontrado,
+        document.getElementById("tabela").innerHTML = "<tr><th>ID da História/Bug</th><th>Está no Azure?</th></tr>"; // Insere o cabeçalho da tabela
+        document.getElementById("subtitulo").innerHTML = ""; // Limpa a informação sobre total de encontrados
+      }
+      naoachou++; // Soma mais um na lista de não encontrados
+      document.getElementById("tabela").insertAdjacentHTML('beforeend', "<tr><td>"+ num +"</td><td class='naotem'>Não</td></tr>"); // Insere a informação sobre o número não encontrado na tabela
+    }
+  }
+
+  if(naoachou == 0){ // Se houve algum número que não foi encontrado...
+    document.getElementById("tabela").innerHTML = ""; // Limpa a tabela
+    document.getElementById("subtitulo").innerHTML = "Todos os " + uniqnumesq.length + " números encontrados!"; // Informa o total
+  }else{ // Senão...
+    document.getElementById("subtitulo").innerHTML = (uniqnumesq.length - naoachou) + " números encontrados."; // Conta quantos foram de fato encontrados
+  }
+
+}
+
+
+
+function semAcento(nome){ // Função legada, do código anterior. Não está sendo usada, mas pode ser útil algum dia, então... taí.
+  nome = nome.replace(/\s+/g," ");
+  nome = nome.trim();
+  nome = nome.replace(/[ÁÀÂÃáàâã]/g,"A");
+  nome = nome.replace(/[ÉÈÊéèê]/g,"E");
+  nome = nome.replace(/[ÍÌÎíìî]/g,"I");
+  nome = nome.replace(/[ÓÒÔÕóòôõ]/g,"O");
+  nome = nome.replace(/[ÚÙÛÜúùûü]/g,"U");
+  nome = nome.replace(/[Çç]/g,"C");
+  nome = nome.replace(/\s?\(.+\)/g,"");
+  nome = nome.replace(/\s?\+\s?\d+/g,"");
+  nome = nome.replace(/\s+/g," ");
+  nome = nome.toUpperCase();
+  return nome;
+}
+
+
+
+</script>
+
+</head>
+
+
+
+
+
+
+
+<body>
+
+<div id='corpo'>
+
+<form autocomplete='off'>
+
+<h2 id='titulo'>Compareitor</h2>
+
+<div id='ladoesquerdo'>
+  <textarea id='dadosnumero' placeholder="Coluna de ID da planilha de faturamento" autofocus cols="23" rows="10"></textarea>
+  <div class='buscar' id='buscarnumeros' onclick="buscarIds();">Comparar números</div>
+</div>
+
+<div id='ladodireito'>
+  <textarea id='basenumeros' placeholder="CSV gerado no Azure" autofocus cols="23" rows="10"></textarea>
+</div>
+
+<div id='ladodebaixo'>
+  <br>
+
+  <h3 id='subtitulo'></h3>
+
+  <table id='tabela'></table>
+
+</div>
+
+</form>
+
+</div>
+
+
+
+</body>
+
+</html>
